@@ -1,35 +1,191 @@
-# Software Requirements Specification (SRS)  
-## Coin Collection React Frontend
+# Software Requirements Specification (SRS)
 
-## 1. Purpose and Scope
-This document defines the requirements for a local-only system consisting of a React single-page web application and a local API service that persists data to the repository filesystem. The system allows users to register, login/logout, and manage a coin collection. Users must be logged in to add coins.
+## 1. Introduction
+
+### 1.1 Purpose
+
+This document specifies the software requirements for the **Blank Template Web Application**. The system is intended to serve as a minimal, reusable starting point for web application development, providing only basic user authentication functionality and a structural foundation for future features.
+
+The intended audience includes developers, maintainers, and automated agents working with or extending the system.
+
+### 1.2 Scope
+
+The system is a web application composed of a frontend, backend, and database, all maintained within a single codebase. As of this version, the only supported functionality is user registration, authentication, and logout. All application pages are intentionally minimal, consisting of stylized but otherwise blank white pages.
+
+The system is implemented using React and TypeScript and is designed to be deployed via Docker using separate containers for the frontend and backend.
+
+### 1.3 Definitions, Acronyms, and Abbreviations
+
+* **SRS**: Software Requirements Specification
+* **UI**: User Interface
+* **JWT**: JSON Web Token
+* **DB**: Database
+
+### 1.4 References
+
+None.
+
+### 1.5 Overview
+
+This document describes the overall system, its functional requirements, non-functional requirements, constraints, and assumptions. Requirements are stated declaratively and are intended to be unambiguous and implementation-agnostic where possible.
+
+---
 
 ## 2. Overall Description
-The system is a modern but simple React SPA hosted locally and a local API service running on the same machine. Coin data is loaded from and persisted to JSON files within the repository under a per-user folder. There are no external hosted services.
 
-## 3. Functional Requirements
-- **F0: Accounts (Register/Login/Logout)**  
-  The system shall support user accounts with **username** and **password**. Users shall be able to register, login, and logout. Passwords shall not be stored in plaintext.
+### 2.1 Product Perspective
 
-- **F1: Add Coin**  
-  The system shall allow a **logged-in** user to add a coin via a modal dialog. The modal shall contain the fields: denomination, face value, year, and issuing authority. The denomination field shall be a dropdown with the options *Farthing*, *Shilling*, *Penny*, and *Florin*. The year must be a numeric value between 1 and the current calendar year. The modal shall also allow the user to optionally upload a coin image (see **F4**). When the user presses the **Add Coin** button, the coin (and optional image) shall be saved to the collection associated with the logged-in user.
+The Blank Template Web Application is a standalone system. It does not integrate with external services and does not depend on third-party authentication providers. The frontend, backend, and database are logically separated but versioned and developed together within a single repository.
 
-- **F2: View Coins**  
-  The system shall display all coins for the currently logged-in user on the home page in a tiled layout, with each tile showing the coin’s stored information. If a coin has an associated image, the tile shall display that image.
+### 2.2 Product Functions
 
-- **F3: Delete Coin**  
-  The system shall allow a **logged-in** user to delete a coin by pressing an “X” button located in the top-right corner of a coin tile. The coin shall be removed immediately with no confirmation prompt.
+At a high level, the system provides the following functions:
 
-- **F4: Upload Image**  
-  The system shall allow the user to choose and upload an image from the **Add Coin** modal. The image shall be stored in the frontend as a **JPEG** associated with the coin record. If an image is provided, it shall be displayed on the corresponding coin tile.
+* User registration
+* User authentication (login)
+* User logout
+* Conditional navigation UI based on authentication state
+
+No other application features are provided in this version.
+
+### 2.3 User Classes and Characteristics
+
+The system supports a single user class:
+
+* **Standard User**: Any user capable of registering, logging in, and logging out. No administrative or privileged users exist.
+
+### 2.4 Operating Environment
+
+* Frontend: Web browser running a React application written in TypeScript
+* Backend: TypeScript-based server application
+* Database: Relational database storing user credentials
+* Deployment: Docker-based containerized environment
+
+### 2.5 Design and Implementation Constraints
+
+* The frontend and backend shall run in separate Docker containers.
+* The system shall be deployable on any platform that supports Docker.
+* User credentials shall be stored only in the database.
+* Passwords shall never be stored in plaintext.
+
+### 2.6 Assumptions and Dependencies
+
+* A Docker-compatible runtime environment is available.
+* A relational database technology is available and supported by the backend.
+* No external authentication or identity services are used.
+
+---
+
+## 3. System Features and Functional Requirements
+
+### 3.1 User Registration
+
+**Description:**
+The system shall allow unauthenticated users to create a new user account.
+
+**Functional Requirements:**
+
+* **FR-1**: The system shall provide a registration interface accessible to unauthenticated users.
+* **FR-2**: The system shall require a username and password to register.
+* **FR-3**: Usernames shall be unique across the system.
+* **FR-4**: Usernames shall be between 3 and 30 characters in length.
+* **FR-5**: Passwords shall have a minimum length of 8 characters.
+* **FR-6**: The system shall reject registration attempts that violate username or password constraints.
+* **FR-7**: Upon successful registration, the user shall be able to log in using the provided credentials.
+
+Features such as email verification, password confirmation emails, or profile setup are not supported in this version.
+
+### 3.2 User Login
+
+**Description:**
+The system shall allow registered users to authenticate using their credentials.
+
+**Functional Requirements:**
+
+* **FR-8**: The system shall provide a login interface accessible to unauthenticated users.
+* **FR-9**: The system shall authenticate users using a username and password.
+* **FR-10**: The system shall deny access when invalid credentials are provided.
+* **FR-11**: Upon successful login, the system shall mark the user as authenticated for the duration of the session.
+
+Persistent login mechanisms, including JWT-based authentication and cookie-based sessions, are explicitly out of scope.
+
+### 3.3 User Logout
+
+**Description:**
+The system shall allow authenticated users to terminate their session.
+
+**Functional Requirements:**
+
+* **FR-12**: The system shall provide a logout mechanism accessible to authenticated users.
+* **FR-13**: Upon logout, the system shall return the user to an unauthenticated state.
+
+### 3.4 Navigation Bar Behavior
+
+**Description:**
+The system shall display navigation options based on the user’s authentication state.
+
+**Functional Requirements:**
+
+* **FR-14**: When the user is not authenticated, the navigation bar shall display links to Register and Login.
+* **FR-15**: When the user is authenticated, the navigation bar shall display a Profile button and a Logout button.
+* **FR-16**: The Profile button shall not link to any functionality or page in this version.
+
+### 3.5 User Interface Presentation
+
+**Description:**
+The system UI is intentionally minimal.
+
+**Functional Requirements:**
+
+* **FR-17**: All application pages shall render as stylized but otherwise blank white pages.
+* **FR-18**: No application-specific content beyond authentication-related UI elements shall be displayed.
+
+---
 
 ## 4. Data Requirements
-- User account data shall be stored in the repository under `data/users/<username>/user.json`.
-- Simple hashing shall be used to store passwords.
-- Coin data for a user shall be stored in the repository under `data/users/<username>/coins.json` as JSON objects.
-- Coin data shall be saved when the user presses the **Add Coin** button in the modal or the **X** button on a coin tile.
-- Coin images, if provided, shall be persisted as a JPEG-encoded representation suitable for JSON storage (e.g., a `data:image/jpeg;base64,...` string) associated with the coin record.
-- Coin data shall not be stored in the user’s browser `localStorage`.
+
+### 4.1 User Data Model
+
+The system shall store user data in a relational database.
+
+**Data Attributes:**
+
+* Username (unique)
+* Password hash
+
+**Data Requirements:**
+
+* **DR-1**: Usernames shall be stored in a unique, indexed column.
+* **DR-2**: Passwords shall be stored only as cryptographic hashes.
+* **DR-3**: The system shall not store plaintext passwords at any time.
+
+No additional user attributes are stored in this version.
+
+---
 
 ## 5. Non-Functional Requirements
-The user interface shall be simple and modern in style. The application shall be responsive for desktop use and operate entirely offline, hosted locally with no external backend services.
+
+### 5.1 Security
+
+* **NFR-1**: Passwords shall be hashed using an industry-standard cryptographic hashing algorithm.
+* **NFR-2**: Authentication endpoints shall not expose sensitive information in error messages.
+
+### 5.2 Performance
+
+* **NFR-3**: Authentication operations shall complete within a reasonable time under normal load.
+
+### 5.3 Portability
+
+* **NFR-4**: The system shall be deployable on any operating system that supports Docker.
+
+### 5.4 Maintainability
+
+* **NFR-5**: The system shall be implemented using TypeScript to promote type safety and maintainability.
+
+---
+
+## 6. Deployment Requirements
+
+* **DEP-1**: The frontend shall be packaged and deployed as a Docker container.
+* **DEP-2**: The backend shall be packaged and deployed as a separate Docker container.
+* **DEP-3**: The system shall be runnable using container orchestration tools such as Doc
