@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import bcrypt from "bcrypt";
-import { createUser, findUserHash } from "./db";
+import { createUser, findUserHash } from "./db.js";
 
 const app = express();
 app.use(cors());

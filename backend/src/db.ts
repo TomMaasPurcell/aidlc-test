@@ -27,7 +27,7 @@ export function findUserHash(username: string): Promise<string | null> {
         db.get(
             "SELECT password_hash FROM users WHERE username = ?",
             [username],
-            (err, row) => {
+            (err, row: { password_hash?: string } | undefined) => {
                 if (err) return reject(err);
                 resolve(row?.password_hash ?? null);
             }
